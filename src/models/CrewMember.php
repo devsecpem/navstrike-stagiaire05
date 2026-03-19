@@ -11,8 +11,11 @@ class CrewMember {
      */
     public function getAssigned() {
         global $conn;
-        $query = "SELECT * FROM crew WHERE station IS NOT NULL ORDER BY rank DESC";
-        return mysqli_query($conn, $query);
+        $stmt = $conn->prepare("SELECT * FROM patients WHERE name LIKE ?");
+        $param = "%" . $searchTerm . "%";
+        $stmt->bind_param("s", $param);
+        $stmt->execute();
+        $result = $stmt->get_result();
     }
 
     /**
@@ -21,8 +24,10 @@ class CrewMember {
     public function findByRole() {
         global $conn;
         $role = $_GET['role'];
-        $query = "SELECT * FROM crew WHERE role = '" . $role . "' ORDER BY rank DESC";
-        return mysqli_query($conn, $query);
+        $stmt = $conn->prepare("SELECT * FROM patients WHERE id = ?");
+        $stmt->bind_param("s", $patientId);
+        $stmt->execute();
+        return $stmt->get_result();
     }
 
     /**
